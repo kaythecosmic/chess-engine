@@ -1,3 +1,3 @@
 # Chess Engine in Python
 ### Under Development
-This repository contains a simple yet powerful chess engine implemented in Python. The engine provides move generation, game analysis, and evaluation functions, allowing users to play and analyze chess games. It's a great resource for learning purpose.
+This repository is to contain a simple yet powerful chess engine implemented in Python. The engine provides move generation, game analysis, and evaluation functions, allowing users to play and analyze chess games. It's an excellent resource for learning purposes.
