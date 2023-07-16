@@ -15,11 +15,12 @@ padding = 30
 
 
 def imageLoad():
-    pieceList = ["wQ", "wK", "wB", "wN", "wR",
-                 "wP", "bQ", "bK", "bB", "bN", "bR", "bP"]
+    pieceList = ["wQ", "wK", "wB", "wN", "wR", "wP", "bQ", "bK", "bB", "bN", "bR", "bP"]
     for piece in pieceList:
-        imageList[piece] = pg.transform.scale(pg.image.load(
-            "assets/pieces/" + piece + ".png"), (squareSize-padding, squareSize-padding))
+        imageList[piece] = pg.transform.scale(
+            pg.image.load("assets/pieces/" + piece + ".png"),
+            (squareSize - padding, squareSize - padding),
+        )
 
 
 def main():
@@ -30,13 +31,37 @@ def main():
     clock = pg.time.Clock()
     imageLoad()
     running = True
-
     chessGame = ce.GameStatus()
+
+    clickList = []
+    lastSquare = ()
 
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                click = pg.mouse.get_pos()  # click cordinates raw
+                selColumn = click[0] // squareSize
+                selRow = click[1] // squareSize
+
+                print(selColumn, selRow)
+
+                if lastSquare == (selRow, selColumn):
+                    clickList = []
+                    lastSquare = ()
+                else:
+                    lastSquare = (selRow, selColumn)
+                    clickList.append(lastSquare)
+
+                    if len(clickList) == 2:
+                        move = ce.Move(clickList, chessGame)
+                        chessGame.makeMove(move)
+                        
+                        # print(moveMade.moveString)
+                        # print()
+                        lastSquare = ()
+                        clickList = []
 
         initiateGame(window, chessGame)
         clock.tick(fpsMax)
@@ -54,9 +79,12 @@ def placeBoard(window):
     for row in range(8):
         for column in range(8):
 
-            color = colors[((row+column) % 2)]
-            pg.draw.rect(window, color, pg.Rect(column*squareSize,
-                         row*squareSize, squareSize, squareSize))
+            color = colors[((row + column) % 2)]
+            pg.draw.rect(
+                window,
+                color,
+                pg.Rect(column * squareSize, row * squareSize, squareSize, squareSize),
+            )
 
 
 def placePieces(window, board):
@@ -65,8 +93,15 @@ def placePieces(window, board):
             pieceName = board[row][column]
             if pieceName != "--":
                 pieceImage = imageList[pieceName]
-                window.blit(pieceImage, pg.Rect(column*squareSize + (padding/2),
-                                                row*squareSize + (padding/2), squareSize, squareSize))
+                window.blit(
+                    pieceImage,
+                    pg.Rect(
+                        column * squareSize + (padding / 2),
+                        row * squareSize + (padding / 2),
+                        squareSize,
+                        squareSize,
+                    ),
+                )
 
 
 if __name__ == "__main__":

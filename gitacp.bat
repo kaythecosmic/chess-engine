@@ -1,5 +1,5 @@
 git status
 git add .
-set message="initial commit, board initialization implemented"
+set message="implemented chess pieve movement"
 git commit -m %message%
 gitp push
