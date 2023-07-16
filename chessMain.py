@@ -57,9 +57,6 @@ def main():
                     if len(clickList) == 2:
                         move = ce.Move(clickList, chessGame)
                         chessGame.makeMove(move)
-                        
-                        # print(moveMade.moveString)
-                        # print()
                         lastSquare = ()
                         clickList = []
 
