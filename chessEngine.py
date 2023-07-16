@@ -21,11 +21,15 @@ class GameStatus:
     def makeMove(self, move):
         self.board[move.start[0]][move.start[1]] = "--"
         self.board[move.end[0]][move.end[1]] = move.pieceMoved
-        self.moveHistory.append(move.moveString)
+        self.moveHistory.append(move)
         self.whiteToPlay = not self.whiteToPlay
-        
         # print(self.moveHistory)
         
+    def undoMove(self):
+        if len(self.moveHistory) != 0:
+            move = self.moveHistory.pop()
+            self.board[move.start[0]][move.start[1]] = move.pieceMoved
+            self.board[move.end[0]][move.end[1]] = move.pieceCaptured
         
 
 

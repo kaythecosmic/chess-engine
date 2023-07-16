@@ -1,6 +1,8 @@
 import chessEngine as ce
 import pygame as pg
-import numpy as np
+from pygame import mixer
+import time
+import os
 
 # Initializing Board variables
 
@@ -8,12 +10,11 @@ height = width = 800
 squareSize = 100
 fpsMax = 15
 imageList = {}
+soundList = {}
 padding = 30
 
 
 # Loading images into a dictionary
-
-
 def imageLoad():
     pieceList = ["wQ", "wK", "wB", "wN", "wR", "wP", "bQ", "bK", "bB", "bN", "bR", "bP"]
     for piece in pieceList:
@@ -23,6 +24,13 @@ def imageLoad():
         )
 
 
+# Loading game Sounds into a Dictionary
+def soundLoad():
+    sounds = os.listdir("assets/sounds")
+    for sound in sounds:
+        soundList[sound.split(".")[0]] = pg.mixer.Sound("assets/sounds/" + sound)
+
+
 def main():
     # pygame setup (from Documentation)
     pg.init()
@@ -30,22 +38,25 @@ def main():
     window.fill("white")
     clock = pg.time.Clock()
     imageLoad()
+    soundLoad()
     running = True
     chessGame = ce.GameStatus()
 
     clickList = []
     lastSquare = ()
 
+    pg.mixer.Sound.play(soundList["game-start"])
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 running = False
+                pg.mixer.Sound.play(soundList["game-end"])
+                time.sleep(0.25)
+
             elif event.type == pg.MOUSEBUTTONDOWN:
                 click = pg.mouse.get_pos()  # click cordinates raw
                 selColumn = click[0] // squareSize
                 selRow = click[1] // squareSize
-
-                print(selColumn, selRow)
 
                 if lastSquare == (selRow, selColumn):
                     clickList = []
@@ -55,10 +66,19 @@ def main():
                     clickList.append(lastSquare)
 
                     if len(clickList) == 2:
-                        move = ce.Move(clickList, chessGame)
-                        chessGame.makeMove(move)
-                        lastSquare = ()
-                        clickList = []
+                        if chessGame.board[clickList[0][0]][clickList[0][1]] != "--":
+                            move = ce.Move(clickList, chessGame)
+                            chessGame.makeMove(move)
+                            pg.mixer.Sound.play(soundList["move-self"])
+                            lastSquare = ()
+                            clickList = []
+                        else:
+                            lastSquare = ()
+                            clickList = []
+
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_r:  # Undo when 'R' is pressed
+                    chessGame.undoMove()
 
         initiateGame(window, chessGame)
         clock.tick(fpsMax)

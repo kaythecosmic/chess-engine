@@ -1,5 +1,5 @@
 git status
 git add .
-set message="implemented chess piece movement"
+set message="added game sounds"
 git commit -m %message%
 git push
