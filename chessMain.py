@@ -66,7 +66,7 @@ def main():
                     clickList.append(lastSquare)
 
                     if len(clickList) == 2:
-                        if chessGame.board[clickList[0][0]][clickList[0][1]] != "--":
+                        if chessGame.board[clickList[0][0]][clickList[0][1]] != "--": #checking if the starting square is not empty
                             move = ce.Move(clickList, chessGame)
                             chessGame.makeMove(move)
                             pg.mixer.Sound.play(soundList["move-self"])
