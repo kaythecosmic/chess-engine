@@ -1,1 +1,2 @@
-from pygame import mixer
+        #     print("Direction Change")
+        # print(counter, "\n==============")

@@ -9,7 +9,7 @@ class GameStatus:
             ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
-            ["--", "--", "--", "--", "--", "--", "--", "--"],
+            ["--", "--", "wR", "--", "--", "--", "--", "--"],
             ["--", "--", "--", "--", "--", "--", "--", "--"],
             ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
@@ -49,8 +49,8 @@ class GameStatus:
                     if piece == "P":
                         self.getPawnMoves(row, column, moves)
 
-                    # elif piece == "R":
-                    #     self.getRookMoves(row, column, moves)
+                    elif piece == "R":
+                        self.getRookMoves(row, column, moves)
 
                     # elif piece == "N":
                     #     self.getKnightMoves(row, column, moves)
@@ -126,19 +126,54 @@ class GameStatus:
                         Move([(row, column), (row + 1, column + 1)], self.board)
                     )
             elif column == 0:
-                if self.board[row + 1][column - 1][0] == "b":
+                if self.board[row + 1][column + 1][0] == "w":
                     moves.append(
                         Move([(row, column), (row + 1, column + 1)], self.board)
                     )
 
             elif column == 7:
-                if self.board[row - 1][column - 1][0] == "b":
+                if self.board[row + 1][column - 1][0] == "w":
                     moves.append(
                         Move([(row, column), (row + 1, column - 1)], self.board)
                     )
 
     def getRookMoves(self, row, column, moves):
-        pass
+
+        print("for rook: ", row, column)
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        piecePosition = (row, column)
+        counter = 0
+
+        for direction in directions:
+            rowCheck = row
+            columnCheck = column
+            while True:
+                if (rowCheck + direction[0]) not in range(0, 8):
+                    break
+                else:
+                    rowCheck = rowCheck + direction[0]
+
+                if (columnCheck + direction[1]) not in range(0, 8):
+                    break
+                else:
+                    columnCheck = columnCheck + direction[1]
+
+                piece = self.board[rowCheck][columnCheck]
+                if piece != "--":
+                    if (piece[0] == "b" and self.whiteToPlay) or (
+                        piece[0] == "w" and not self.whiteToPlay
+                    ):
+                        moves.append(
+                            Move([(row, column), (rowCheck, columnCheck)], self.board)
+                        )
+                        counter += 1
+                    break
+
+                counter += 1
+                print(rowCheck, columnCheck)
+                moves.append(Move([(row, column), (rowCheck, columnCheck)], self.board))
+
+        print(counter, "\n==============")
 
 
 class Move:
