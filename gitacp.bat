@@ -1,5 +1,5 @@
 git status
 git add .
-set message="added game sounds"
+set message="implemented pawn moves"
 git commit -m %message%
 git push

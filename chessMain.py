@@ -41,6 +41,9 @@ def main():
     soundLoad()
     running = True
     chessGame = ce.GameStatus()
+    validMoves = chessGame.getValidMoves()
+
+    moveMade = False
 
     clickList = []
     lastSquare = ()
@@ -66,10 +69,14 @@ def main():
                     clickList.append(lastSquare)
 
                     if len(clickList) == 2:
-                        if chessGame.board[clickList[0][0]][clickList[0][1]] != "--": #checking if the starting square is not empty
-                            move = ce.Move(clickList, chessGame)
-                            chessGame.makeMove(move)
-                            pg.mixer.Sound.play(soundList["move-self"])
+                        if (
+                            chessGame.board[clickList[0][0]][clickList[0][1]] != "--"
+                        ):  # checking if the starting square is not empty
+                            move = ce.Move(clickList, chessGame.board)
+                            if move in validMoves:
+                                chessGame.makeMove(move)
+                                moveMade = True
+                                pg.mixer.Sound.play(soundList["move-self"])
                             lastSquare = ()
                             clickList = []
                         else:
@@ -79,6 +86,10 @@ def main():
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_r:  # Undo when 'R' is pressed
                     chessGame.undoMove()
+                    moveMade = True
+        
+        if moveMade:
+            validMoves = chessGame.getValidMoves()
 
         initiateGame(window, chessGame)
         clock.tick(fpsMax)
